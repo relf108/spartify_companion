@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
@@ -28,15 +29,32 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Future<void> addTrack(String track, String ip) async {
-    if (track != '' && ip != '') {
-      await http.post(Uri.parse('http://$ip:8888/addTrack?track=$track'));
+  Future<void> addTrack(String track) async {
+    if (track != '') {
+      await http.post(Uri.parse(
+          'http://ec2-18-206-64-56.compute-1.amazonaws.com:8888/addTrack?track=$track'));
+      await Fluttertoast.showToast(
+          msg: 'Track added to queue',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else {
+      await Fluttertoast.showToast(
+          msg: 'Track invalid, please make sure entered a value',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    var ip = '';
     var track = '';
 
     return Scaffold(
@@ -53,24 +71,12 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 Container(
+                  width: 400,
                   padding: const EdgeInsets.all(15),
-                  width: 500,
                   child: TextField(
-                      onChanged: (_ip) {
-                        ip = _ip;
+                      onSubmitted: (_track) {
+                        track = _track;
                       },
-                      decoration: InputDecoration(labelText: 'Enter Host IP')),
-                ),
-              ],
-            ),
-            
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Container(
-                  width: 500,
-                  padding: const EdgeInsets.all(15),
-                  child: TextField(
                       onChanged: (_track) {
                         track = _track;
                       },
@@ -84,8 +90,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          addTrack(track, ip);
+        onPressed: () async {
+          await addTrack(track);
         },
         tooltip: 'Add Track',
         child: Icon(Icons.add),
