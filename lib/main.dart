@@ -31,8 +31,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   Future<void> addTrack(String track) async {
     if (track != '') {
-      await http.post(Uri.parse(
-          'http://ec2-18-206-64-56.compute-1.amazonaws.com:8888/addTrack?track=$track'));
+      await http
+          .post(Uri.parse('http://54.165.160.136:8888/addTrack?track=$track'));
       await Fluttertoast.showToast(
           msg: 'Track added to queue',
           toastLength: Toast.LENGTH_SHORT,
